@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext } from "react";
 
 const GameContext = createContext();
 export const useGameContext = () => useContext(GameContext);
