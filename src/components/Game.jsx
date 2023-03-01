@@ -36,17 +36,15 @@ export const Game = ({}) => {
   };
 
   function handleLetterInput(letterInput, inputId) {
+    remaningLettersToGuess.push(letterInput);
     const positionInBoard = inputId.charAt(inputId.length - 1);
     const letterBelongsToWord = [...wordToGuess].includes(letterInput);
     const thereAreMoreOccurrences =
       letterCount(remaningLettersToGuess, letterInput) <=
       letterCount([...wordToGuess], letterInput);
+    const letterInPlace = [...wordToGuess][positionInBoard] === letterInput;
 
-    if (
-      [...wordToGuess][positionInBoard] === letterInput &&
-      thereAreMoreOccurrences
-    )
-      return "green";
+    if (letterInPlace && thereAreMoreOccurrences) return "green";
     if (letterBelongsToWord && thereAreMoreOccurrences) return "yellow";
     if (!thereAreMoreOccurrences) return "grey";
     if (!letterBelongsToWord) return "red";
