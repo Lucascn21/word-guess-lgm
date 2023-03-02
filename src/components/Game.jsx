@@ -32,7 +32,7 @@ export const Game = ({}) => {
   }
 
   const letterCount = (array, letter) => {
-    return array.filter((currentLetter) => currentLetter == letter).length;
+    return array.filter((currentLetter) => currentLetter === letter).length;
   };
 
   function handleLetterInput(letterInput, inputId) {
@@ -43,7 +43,6 @@ export const Game = ({}) => {
       letterCount(remaningLettersToGuess, letterInput) <=
       letterCount([...wordToGuess], letterInput);
     const letterInPlace = [...wordToGuess][positionInBoard] === letterInput;
-
     if (letterInPlace && thereAreMoreOccurrences) return "green";
     if (letterBelongsToWord && thereAreMoreOccurrences) return "yellow";
     if (!letterBelongsToWord) return "red";
@@ -66,7 +65,7 @@ export const Game = ({}) => {
               maxLength="1"
               size="1"
               style={{ gridColumn: indexWord + 1 }}
-              readOnly={index != attemptNumber}
+              readOnly={index !== attemptNumber}
               onChange={(evt) => {
                 //console.log(evt.target.value);
                 //console.dir(evt.target);
