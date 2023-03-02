@@ -46,8 +46,8 @@ export const Game = ({}) => {
 
     if (letterInPlace && thereAreMoreOccurrences) return "green";
     if (letterBelongsToWord && thereAreMoreOccurrences) return "yellow";
-    if (!thereAreMoreOccurrences) return "grey";
     if (!letterBelongsToWord) return "red";
+    if (!thereAreMoreOccurrences) return "grey";
   }
 
   return (
