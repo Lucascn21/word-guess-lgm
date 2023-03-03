@@ -1,19 +1,20 @@
-import React from "react";
-
 import { useGameContext } from "../context/GameContext";
 
 export const Game = ({}) => {
-  const { attemptNumber, wordToGuess, maxAttempts, setAttemptNumber } =
-    useGameContext();
-  let remaningLettersToGuess = [];
+  const {
+    attemptNumber,
+    wordToGuess,
+    maxAttempts,
+    setAttemptNumber,
+    foundLettersByIndex,
+    setFoundLettersByIndex,
+  } = useGameContext();
 
-  let maxAttemptsArray = Array.from(
+  const wordLettersArray = [...wordToGuess];
+
+  let lettersToCompare = [];
+  const maxAttemptsArray = Array.from(
     { length: maxAttempts },
-    (value, index) => index
-  );
-
-  let wordLengthArray = Array.from(
-    { length: wordToGuess.length },
     (value, index) => index
   );
 
@@ -27,7 +28,8 @@ export const Game = ({}) => {
 
     // Or you can work with it as a plain object:
     const formJson = Object.fromEntries(formData.entries());
-    console.log(formJson);
+    //console.log(formJson);
+
     setAttemptNumber(attemptNumber + 1);
   }
 
@@ -36,17 +38,23 @@ export const Game = ({}) => {
   };
 
   function handleLetterInput(letterInput, inputId) {
-    remaningLettersToGuess.push(letterInput);
+    lettersToCompare.push(letterInput);
     const positionInBoard = inputId.charAt(inputId.length - 1);
     const letterBelongsToWord = [...wordToGuess].includes(letterInput);
     const thereAreMoreOccurrences =
-      letterCount(remaningLettersToGuess, letterInput) <=
+      letterCount(lettersToCompare, letterInput) <=
       letterCount([...wordToGuess], letterInput);
     const letterInPlace = [...wordToGuess][positionInBoard] === letterInput;
-    if (letterInPlace && thereAreMoreOccurrences) return "green";
+
+    if (letterInPlace && thereAreMoreOccurrences) {
+      let updatedFoundLetters = { ...foundLettersByIndex };
+      updatedFoundLetters[positionInBoard] = letterInput;
+      setFoundLettersByIndex(updatedFoundLetters);
+      return "green";
+    }
+
     if (letterBelongsToWord && thereAreMoreOccurrences) return "yellow";
     if (!letterBelongsToWord) return "red";
-    if (!thereAreMoreOccurrences) return "grey";
   }
 
   return (
@@ -54,26 +62,36 @@ export const Game = ({}) => {
       {attemptNumber} {wordToGuess}
       <form onSubmit={handleSubmit}>
         {maxAttemptsArray.map((attempt, index) =>
-          wordLengthArray.map((wordLength, indexWord) => (
+          wordLettersArray.map((letter, wordIndex) => (
             <input
-              key={`${attempt}-letter-${indexWord}`}
+              key={`${attempt}-letter-${wordIndex}`}
               type="text"
-              id={`${attempt}-letter-${indexWord}`}
-              name={`${attempt}-letter-${indexWord}`}
+              id={`${attempt}-letter-${wordIndex}`}
+              name={`${attempt}-letter-${wordIndex}`}
               required
               minLength="1"
               maxLength="1"
               size="1"
-              style={{ gridColumn: indexWord + 1 }}
-              readOnly={index !== attemptNumber}
+              style={{
+                gridColumn: wordIndex + 1,
+                backgroundColor: foundLettersByIndex[wordIndex]
+                  ? "green"
+                  : "grey",
+              }}
+              readOnly={
+                index !== attemptNumber || foundLettersByIndex[wordIndex]
+              }
+              disabled={index > attemptNumber}
               onChange={(evt) => {
                 //console.log(evt.target.value);
-                //console.dir(evt.target);
+                //console.dir(evt.target.id);
                 evt.target.style.backgroundColor = handleLetterInput(
                   evt.target.value,
                   evt.target.id
                 );
+                evt.target.readOnly = true;
               }}
+              defaultValue={foundLettersByIndex[wordIndex]}
             />
           ))
         )}

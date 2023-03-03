@@ -7,6 +7,7 @@ export const GameContextProvider = (props) => {
   const [wordToGuess, setWordToGuess] = useState("tests");
   const [attemptNumber, setAttemptNumber] = useState(0);
   const maxAttempts = 6;
+  const [foundLettersByIndex, setFoundLettersByIndex] = useState({});
 
   return (
     <GameContext.Provider
@@ -15,6 +16,8 @@ export const GameContextProvider = (props) => {
         attemptNumber,
         setAttemptNumber,
         maxAttempts,
+        foundLettersByIndex,
+        setFoundLettersByIndex,
       }}
     >
       {props.children}
